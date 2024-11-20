@@ -4,7 +4,7 @@ on:
 name: Drive-NC-build-push
 jobs:
   build-and-push:
-    runs-on: arc-runners-hdrive-nc
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
