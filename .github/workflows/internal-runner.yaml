@@ -75,7 +75,7 @@ jobs:
           kubectl delete job kaniko-nc-build-push --namespace=arc-runners --ignore-not-found
           pwd
           ls -l
-          kubectl apply -f kaniko-build-push.yaml          
+          kubectl apply -f build-push-job.yaml          
 
       - name: Monitor Job Status
         run: |
