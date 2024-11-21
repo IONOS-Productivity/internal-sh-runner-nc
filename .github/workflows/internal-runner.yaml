@@ -8,7 +8,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+    
+      - name: Install Make
+        run: sudo apt-get update && sudo apt-get install -y make
 
+      - name: Verify Make Installation
+        run: make --version  
+      
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
         id: install
