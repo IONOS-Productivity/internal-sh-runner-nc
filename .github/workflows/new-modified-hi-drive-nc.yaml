@@ -55,16 +55,16 @@ jobs:
           fi
           set -e
         
-      - name: Create Dockerfile for Kaniko
-        run: |
-          set +e
-          kubectl get secret docker-file-config
-          if [ $? -ne 0 ]; then            
-            kubectl create secret generic docker-file-config --from-file=Dockerfile=./.devcontainer/Dockerfile --namespace=arc-runners
-          else
-            echo "docker-file-config already exists, skipping creation."
-          fi
-          set -e 
+      #- name: Create Dockerfile for Kaniko
+      #  run: |
+      #    set +e
+      #    kubectl get secret docker-file-config
+      #    if [ $? -ne 0 ]; then            
+      #      kubectl create secret generic docker-file-config --from-file=Dockerfile=./.devcontainer/Dockerfile --namespace=arc-runners
+      #    else
+      #      echo "docker-file-config already exists, skipping creation."
+      #    fi
+      #    set -e 
 
       - name: Create and Apply Kaniko Job
         run: |
@@ -85,15 +85,27 @@ jobs:
             namespace: arc-runners
           spec:
             template:
-              spec:                                 
+              spec:  
+                initContainers:
+                - name: git-clone
+                  image: alpine/git
+                  args: 
+                  - clone
+                  - --depth=1
+                  - 'https://github.com/IONOS-Productivity/nc-server.git'
+                  - /workspace
+                  volumeMounts:
+                  - name: build-context
+                    mountPath: /workspace
                 containers:
                 - name: kaniko
                   image: gcr.io/kaniko-project/executor:latest
                   args:
-                  - --dockerfile=/workspace/Dockerfile
+                  - --dockerfile=/workspace/.devcontainer/Dockerfile
                   - --context=dir:///workspace
                   - --destination=reg.1u1.it:443/itoah/drive-nc:latest
                   - --skip-tls-verify
+                  - --single-snapshot
                   volumeMounts:
                   - name: build-context
                     mountPath: /workspace                    
@@ -102,8 +114,7 @@ jobs:
                 restartPolicy: Never
                 volumes:
                 - name: build-context
-                  secret:
-                    secretName: docker-file-config
+                  emptyDir: {}
                 - name: docker-sec-config
                   secret:
                     secretName: docker-sec-config
@@ -121,5 +132,5 @@ jobs:
         run: |
           kubectl delete job kaniko-build-push-nc-image --namespace=arc-runners --ignore-not-found
           kubectl delete secret -n arc-runners docker-sec-config
-          kubectl delete secret -n arc-runners docker-file-config
+          #kubectl delete secret -n arc-runners docker-file-config
           echo "All tasks completed gracefully."
