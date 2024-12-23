@@ -4,8 +4,8 @@ on:
 name: New-Modified-Hi-Drive-Build-NC
 jobs:
   build-and-push:
-    #runs-on: self-hosted
-    runs-on: arc-runners-hi-drive-nc
+    runs-on: self-hosted
+    #runs-on: arc-runners-hi-drive-nc
     steps:
       - name: Checkout
         uses: actions/checkout@v4
