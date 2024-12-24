@@ -13,28 +13,26 @@ jobs:
         with:
           repository: IONOS-Productivity/nc-server
           ref: master
-          #token: ${{ secrets.GITHUB_TOKEN }}
+          #token: ${{ secrets.GITHUB_TOKEN }}     
   
       - name: Create Docker config.json
         run: |
-          mkdir -p /kaniko/.docker
+          mkdir -p ~/kaniko/.docker
           echo '{
             "auths": {
               "${{ env.HARBOR_REGISTRY }}": {
                 "auth": "'$(echo -n ${{ secrets.HARBOR_USERNAME }}:${{ secrets.HARBOR_PASSWORD }} | base64)'"
               }
             }
-          }' > /kaniko/.docker/config.json
+          }' > ~/kaniko/.docker/config.json    
   
       - name: Build and Push with Kaniko
-        uses: GoogleCloudPlatform/kaniko-action@v1
+        uses: google-github-actions/setup-kaniko@v0.3
         with:
           args: >
             - --context=.
             - --destination=reg.1u1.it:443/itoah/drive-nc:latest
             - --dockerfile=./.devcontainer/Dockerfile
-            #- --git=https://github.com/muhali-ionos/nc.git
-            #- --git-token=${{ secrets.GITHUB_TOKEN }}
             - --skip-tls-verify
             - --single-snapshot
   
