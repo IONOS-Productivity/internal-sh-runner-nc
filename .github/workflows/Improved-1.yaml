@@ -1,0 +1,44 @@
+name: Build and Push NextCloud Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          repository: IONOS-Productivity/nc-server
+          ref: master
+          #token: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Create Docker config.json
+        run: |
+          mkdir -p /kaniko/.docker
+          echo '{
+            "auths": {
+              "${{ env.HARBOR_REGISTRY }}": {
+                "auth": "'$(echo -n ${{ secrets.HARBOR_USERNAME }}:${{ secrets.HARBOR_PASSWORD }} | base64)'"
+              }
+            }
+          }' > /kaniko/.docker/config.json
+  
+      - name: Build and Push with Kaniko
+        uses: GoogleCloudPlatform/kaniko-action@v1
+        with:
+          args: >
+            - --context=.
+            - --destination=reg.1u1.it:443/itoah/drive-nc:latest
+            - --dockerfile=./.devcontainer/Dockerfile
+            #- --git=https://github.com/muhali-ionos/nc.git
+            #- --git-token=${{ secrets.GITHUB_TOKEN }}
+            - --skip-tls-verify
+            - --single-snapshot
+  
+      - name: Clean up sensitive files
+        if: always()
+        run: |
+          rm -f /kaniko/.docker/config.json
