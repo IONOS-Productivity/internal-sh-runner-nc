@@ -1,4 +1,4 @@
-name: New-Modified-Hi-Drive-Build-NC
+name: Build and Push NC Image
 
 on:
   workflow_dispatch:
