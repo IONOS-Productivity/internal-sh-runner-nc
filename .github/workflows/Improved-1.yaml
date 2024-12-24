@@ -27,7 +27,7 @@ jobs:
           }' > ~/kaniko/.docker/config.json    
   
       - name: Build and Push with Kaniko
-        uses: google-github-actions/setup-kaniko@v0.3
+        uses: int128/kaniko-action@v1
         with:
           args: >
             - --context=.
