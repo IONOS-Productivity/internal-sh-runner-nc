@@ -13,7 +13,12 @@ jobs:
         with:
           repository: IONOS-Productivity/nc-server
           ref: master
-          #token: ${{ secrets.GITHUB_TOKEN }}     
+          token: ${{ secrets.GITHUB_TOKEN }}   
+
+      - name: Print contents
+        run: |
+          pwd
+          ls -la
   
       - name: Create Docker config.json
         run: |
@@ -27,7 +32,7 @@ jobs:
           }' > ~/kaniko/.docker/config.json    
   
       - name: Build and Push with Kaniko
-        uses: int128/kaniko-action@v1
+        uses: aevea/action-kaniko@master
         with:
           args: >
             - --context=.
@@ -39,4 +44,4 @@ jobs:
       - name: Clean up sensitive files
         if: always()
         run: |
-          rm -f /kaniko/.docker/config.json
+          rm -f ~/kaniko/.docker/config.json
