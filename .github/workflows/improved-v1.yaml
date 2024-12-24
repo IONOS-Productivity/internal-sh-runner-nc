@@ -5,7 +5,8 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: [self-hosted, arc-runners-hi-drive-nc]
+    #runs-on: self-hosted
+    runs-on: arc-runners-hi-drive-nc
     
     steps:
       - name: Install Make
