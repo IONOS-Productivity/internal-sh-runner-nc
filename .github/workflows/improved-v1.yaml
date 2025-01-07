@@ -77,7 +77,7 @@ jobs:
                 - name: kaniko
                   image: gcr.io/kaniko-project/executor:latest
                   args:
-                  - --dockerfile=/workspace/.devcontainer/Dockerfile
+                  - --dockerfile=./.devcontainer/Dockerfile
                   - --context=git://$TOKEN@github.com/IONOS-Productivity/nc-server.git
                   - --git=branch=stable30
                   - --destination=reg.1u1.it:443/itoah/drive-nc:latest
