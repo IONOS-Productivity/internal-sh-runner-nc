@@ -82,10 +82,10 @@ jobs:
                   - --destination=reg.1u1.it:443/itoah/drive-nc:latest
                   - --skip-tls-verify
                   - --single-snapshot
-                  #resources:
-                  #  limits:
-                  #    memory: 4Gi
-                  #    cpu: 2
+                  resources:
+                    limits:
+                      memory: 4Gi
+                      cpu: 2
                   volumeMounts:                  
                   - name: docker-sec-config
                     mountPath: /kaniko/.docker
